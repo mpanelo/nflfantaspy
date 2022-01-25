@@ -47,7 +47,7 @@ def initialize_teams(team_ids):
 
     return teams
 
-def save_teams_to_disk(teams):
+def save_as_json(teams):
     payload = {"teams": []}
     
     for _, team in teams.items():
@@ -65,7 +65,7 @@ def main():
 
     team_ids = set(parse_team_id(span) for span in span_tags)
     teams = initialize_teams(team_ids)
-    save_teams_to_disk(teams)
+    save_as_json(teams)
 
 
 if __name__ == "__main__":
