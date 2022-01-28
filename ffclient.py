@@ -13,11 +13,18 @@ class FantasyFootballClient:
         url = self.base_url + f"/team/{team_id}"
         return self._get_content(url)
 
-    def get_schedule_content(self, year: int) -> bytes:
+    def get_league_history(self, year: int, week: int) -> bytes:
         url = self.base_url + f"/history/{year}/schedule"
-        return self._get_content(url)
+        payload = {
+            "gameSeason": year,
+            "leagueId": self.league_id,
+            "scheduleDetail": week,
+            "scheduleType": "week",
+            "standingsTab": "schedule",
+        }
+        return self._get_content(url, payload)
 
-    def _get_content(self, url: str) -> bytes:
-        res = requests.get(url)
+    def _get_content(self, url: str, payload={}) -> bytes:
+        res = requests.get(url, params=payload)
         res.raise_for_status()
         return res.content
