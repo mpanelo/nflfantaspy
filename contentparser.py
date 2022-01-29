@@ -13,10 +13,7 @@ TAG = "name"
 ATTRS = "attrs"
 
 SOUP_KWARGS_BY_FIELD = {
-    TEAM_ID: {
-        TAG: "span",
-        ATTRS: {"class": ATTR_TEAM_ID}
-    },
+    TEAM_ID: {TAG: "span", ATTRS: {"class": ATTR_TEAM_ID}},
     TEAM_NAME: {
         TAG: "span",
         ATTRS: {"class": "selecter-item"},
