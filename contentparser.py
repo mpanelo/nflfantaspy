@@ -1,5 +1,6 @@
 import re
 
+from models import Game
 from bs4 import BeautifulSoup
 
 ATTR_TEAM_ID = re.compile("teamId-[0-9]")
@@ -56,3 +57,36 @@ def _parse_tag_text(soup: BeautifulSoup, kwargs: dict, custom_attrs={}):
         raise Exception(f"unable to find tag {kwargs[TAG]}")
 
     return tag.get_text().strip().lower()
+
+
+class ScheduleContentParser:
+    def __init__(self, content: bytes):
+        self.soup = BeautifulSoup(content, "html.parser")
+
+    def parse_games(self, week: int):
+        games = []
+        for matchup in self._find_matchups():
+            games.append(self._parse_game(matchup, week))
+        return games
+
+    def _find_matchups(self):
+        return self.soup.find_all("li", attrs={"class": "matchup"})
+
+    def _parse_game(self, matchup, week):
+        home, away = matchup.find_all("div", attrs={"class": "teamWrap"})
+        home_id, home_score = self._find_team_id(home), self._find_team_total(home)
+        away_id, away_score = self._find_team_id(away), self._find_team_total(away)
+        return Game(week, home_id, away_id, home_score, away_score)
+
+    def _find_team_id(self, team):
+        result = team.find("a", attrs={"class": ATTR_TEAM_ID})
+
+        for cl in result.attrs["class"]:
+            if cl.startswith(TEAM_ID_PREFIX):
+                return int(cl.strip(TEAM_ID_PREFIX))
+
+        raise Exception(f"no {TEAM_ID_PREFIX}[0-9]+ class found in {result}")
+
+    def _find_team_total(self, team):
+        result = team.find("div", attrs={"class": "teamTotal"})
+        return float(result.text)
