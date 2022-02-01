@@ -1,62 +1,48 @@
 import re
 
-from models import Game
-from bs4 import BeautifulSoup
+from models import Game, Teams, Team
+from bs4 import BeautifulSoup, Tag
 
 ATTR_TEAM_ID = re.compile("teamId-[0-9]")
 TEAM_ID_PREFIX = "teamId-"
 
-TEAM_ID = "TEAM_ID"
-TEAM_NAME = "TEAM_NAME"
-TEAM_OWNER = "TEAM_OWNER"
 
-TAG = "name"
-ATTRS = "attrs"
+def _parse_team_id(classes: list[str], team_id_prefix="teamId-") -> int:
+    for cls in classes:
+        if cls.startswith(team_id_prefix):
+            return int(cls.strip(team_id_prefix))
 
-SOUP_KWARGS_BY_FIELD = {
-    TEAM_ID: {TAG: "span", ATTRS: {"class": ATTR_TEAM_ID}},
-    TEAM_NAME: {
-        TAG: "span",
-        ATTRS: {"class": "selecter-item"},
-    },
-    TEAM_OWNER: {TAG: "a", ATTRS: {"class": "userName"}},
-}
+    raise Exception(f"unable to find team ID in attribute")
 
 
-def parse_team_ids(content: bytes):
-    soup = BeautifulSoup(content, "html.parser")
-    team_id_kwargs = SOUP_KWARGS_BY_FIELD[TEAM_ID]
-    span_tags = soup.find_all(**team_id_kwargs)
-
-    classes = []
-    for span in span_tags:
-        classes.extend(
-            cl for cl in span.attrs["class"] if cl.startswith(TEAM_ID_PREFIX)
-        )
-
-    return set(int(cl.strip(TEAM_ID_PREFIX)) for cl in classes)
+class Paser(object):
+    def __init__(self, content: bytes):
+        self.soup = BeautifulSoup(content, "html.parser")
 
 
-def parse_team_info(content: bytes, team_id: int):
-    soup = BeautifulSoup(content, "html.parser")
+class TeamParser(Paser):
+    def parse_teams(self):
+        tbody = self.soup.find("tbody")
+        trs = tbody.find_all("tr")
 
-    team_name_kwargs = SOUP_KWARGS_BY_FIELD[TEAM_NAME]
-    team_owner_kwargs = SOUP_KWARGS_BY_FIELD[TEAM_OWNER]
+        teams = []
+        for tr in trs:
+            teams.append(self._parse_team(tr))
 
-    name = _parse_tag_text(soup, team_name_kwargs, {"data-value": team_id})
-    owner = _parse_tag_text(soup, team_owner_kwargs)
+        return Teams(teams)
 
-    return (name, owner)
+    def _parse_team(self, tr: Tag):
+        id = _parse_team_id(tr.attrs["class"], "team-")
 
+        td = tr.find("td", attrs={"class": "teamOwnerName"})
+        span = td.find("span", attrs={"class": "userName"})
+        owner = span.get_text().strip().lower()
 
-def _parse_tag_text(soup: BeautifulSoup, kwargs: dict, custom_attrs={}):
-    kwargs[ATTRS] = kwargs[ATTRS] | custom_attrs
-    tag = soup.find(**kwargs)
+        td = tr.find("td", attrs={"class": "teamImageAndName"})
+        anchor = td.find("a", attrs={"class": "teamName"})
+        team_name = anchor.get_text().strip().lower()
 
-    if tag is None:
-        raise Exception(f"unable to find tag {kwargs[TAG]}")
-
-    return tag.get_text().strip().lower()
+        return Team(id, team_name, owner)
 
 
 class ScheduleContentParser:
