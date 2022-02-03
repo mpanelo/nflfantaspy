@@ -2,7 +2,7 @@ import dacite
 import json
 import os
 
-from dataclasses import dataclass, asdict
+from dataclasses import asdict
 from typing import TypeVar, Type
 
 

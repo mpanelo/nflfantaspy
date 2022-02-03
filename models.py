@@ -1,16 +1,16 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+
+
+GAME_TYPE_REGULAR = "REGULAR"
+GAME_TYPE_PLAYOFF = "PLAYOFF"
+GAME_TYPE_CONSOLATION = "CONSOLATION"
 
 
 @dataclass
 class Team:
-    id: int
+    nfl_id: int
     name: str = ""
     owner: str = ""
-
-
-@dataclass
-class Teams:
-    teams: list[Team]
 
 
 @dataclass
@@ -20,21 +20,16 @@ class Game:
     away_id: int
     home_score: float
     away_score: float
+    type: str
 
 
 @dataclass
 class Season:
     year: int
     games: list[Game]
-    standings: list[int] = field(default_factory=list)
-
-
-@dataclass
-class Seasons:
-    seasons: list[Season]
 
 
 @dataclass
 class League:
-    seasons: Seasons
-    teams: Teams
+    seasons: list[Season]
+    teams: list[Team]
