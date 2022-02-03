@@ -23,6 +23,7 @@ class LeagueHistoryRequests(object):
         return self._get_content(url, payload)
 
     def _get_content(self, url: str, payload={}) -> bytes:
+        print(f"sending request to {url}")
         res = requests.get(url, params=payload)
         res.raise_for_status()
         return res.content

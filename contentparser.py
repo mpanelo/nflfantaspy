@@ -1,6 +1,6 @@
 import re
 
-from models import Game, Teams, Team
+from models import Game, Team, GAME_TYPE_REGULAR
 from bs4 import BeautifulSoup, Tag
 
 ATTR_TEAM_ID = re.compile("teamId-[0-9]")
@@ -15,21 +15,20 @@ def _parse_team_id(classes: list[str], team_id_prefix="teamId-") -> int:
     raise Exception(f"unable to find team ID in attribute")
 
 
-class Paser(object):
+class Parser(object):
     def __init__(self, content: bytes):
         self.soup = BeautifulSoup(content, "html.parser")
 
 
-class TeamParser(Paser):
-    def parse_teams(self):
+class TeamParser(Parser):
+    def parse_teams(self) -> list[Team]:
         tbody = self.soup.find("tbody")
         trs = tbody.find_all("tr")
 
         teams = []
         for tr in trs:
             teams.append(self._parse_team(tr))
-
-        return Teams(teams)
+        return teams
 
     def _parse_team(self, tr: Tag):
         id = _parse_team_id(tr.attrs["class"], "team-")
@@ -45,24 +44,27 @@ class TeamParser(Paser):
         return Team(id, team_name, owner)
 
 
-class ScheduleContentParser:
-    def __init__(self, content: bytes):
-        self.soup = BeautifulSoup(content, "html.parser")
+class ScheduleParser(Parser):
+    def __init__(self, content: bytes, week: int):
+        super().__init__(content)
+        self.week = week
 
-    def parse_games(self, week: int):
+    def parse_schedule(self):
         games = []
         for matchup in self._find_matchups():
-            games.append(self._parse_game(matchup, week))
+            games.append(self._parse_game(matchup))
         return games
 
     def _find_matchups(self):
         return self.soup.find_all("li", attrs={"class": "matchup"})
 
-    def _parse_game(self, matchup, week):
+    def _parse_game(self, matchup):
         home, away = matchup.find_all("div", attrs={"class": "teamWrap"})
         home_id, home_score = self._find_team_id(home), self._find_team_total(home)
         away_id, away_score = self._find_team_id(away), self._find_team_total(away)
-        return Game(week, home_id, away_id, home_score, away_score)
+        return Game(
+            self.week, home_id, away_id, home_score, away_score, GAME_TYPE_REGULAR
+        )
 
     def _find_team_id(self, team):
         result = team.find("a", attrs={"class": ATTR_TEAM_ID})
