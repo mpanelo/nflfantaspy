@@ -27,9 +27,9 @@ class Game:
 class Season:
     year: int
     games: list[Game]
+    teams: list[Team]
 
 
 @dataclass
 class League:
     seasons: list[Season]
-    teams: list[Team]

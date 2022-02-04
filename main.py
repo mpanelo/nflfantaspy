@@ -23,7 +23,7 @@ def main():
         print(f"scraping Season {year}")
         seasons.append(scraper.scrape())
 
-    league = models.League(seasons, [])
+    league = models.League(seasons)
     repo.commit(league, "league.json")
 
 
