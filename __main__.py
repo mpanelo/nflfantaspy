@@ -1,6 +1,6 @@
 import os
 
-from nflfantaspy.db.backends.json.client import DatabaseClient
+from nflfantaspy.db.backends import json
 from nflfantaspy.nfl import fantasy
 from nflfantaspy.spyder import schedule
 from nflfantaspy.parser import schedule, settings
@@ -16,7 +16,7 @@ def main():
     context = parser.parse()
 
     spyder = schedule.Spyder(
-        nfl, schedule.Parser, DatabaseClient("games.json"), context
+        nfl, schedule.Parser, json.DatabaseClient("games.json"), context
     )
     spyder.execute()
 
