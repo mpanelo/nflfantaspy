@@ -1,7 +1,7 @@
 import requests
 
 
-class NFLClient:
+class Client:
     def __init__(self, league_id: int):
         self.league_id = league_id
         self.base_url = f"https://fantasy.nfl.com/league/{league_id}"
@@ -22,5 +22,11 @@ class NFLClient:
             "standingsTab": "schedule",
         }
         response = requests.get(url, params=payload)
+        response.raise_for_status()
+        return response
+
+    def get_settings(self, year):
+        url = f"{self.base_url}/history/{year}/settings"
+        response = requests.get(url)
         response.raise_for_status()
         return response

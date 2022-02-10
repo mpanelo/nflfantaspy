@@ -17,7 +17,11 @@ class Parser(BaseParser):
         return games
 
     def _parse_week(self):
-        return 1
+        ul = self.soup.find("ul", attrs={"class": "scheduleWeekNav"})
+        li = ul.find("li", class_="selected")
+        span = li.find("span", class_="title")
+
+        return int(span.string)
 
     def _find_matchups(self):
         return self.soup.find_all("li", attrs={"class": "matchup"})
