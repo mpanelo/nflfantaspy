@@ -1,10 +1,12 @@
 import json
 import os
 
-ROOT_DIR = "fs/"
+from nflfantaspy.db.backends.base import BaseDatabaseClient
+
+ROOT_DIR = "data/"
 
 
-class DatabaseClient:
+class DatabaseClient(BaseDatabaseClient):
     def __init__(self, filename: str):
         self.filename = filename
 
