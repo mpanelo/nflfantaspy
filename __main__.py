@@ -1,31 +1,30 @@
-import os
+from collections import defaultdict
 
+from nflfantaspy.fetcher import http
+from nflfantaspy import settings
+from nflfantaspy.parser import teams, schedule
+from nflfantaspy import spyder
 from nflfantaspy.db.backends import airtable
-from nflfantaspy.nfl import fantasy
-from nflfantaspy.spyder import schedule as sch
-from nflfantaspy.parser import schedule, settings
-
-NFL_FF_LEAGUE_ID = os.environ["NFL_FF_LEAGUE_ID"]
-AIRTABLE_API_KEY = os.environ["AIRTABLE_API_KEY"]
-AIRTABLE_BASE_ID = os.environ["AIRTABLE_BASE_ID"]
-# SEASON_YEARS = [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021]
 
 
 def main():
-    nfl = fantasy.Client(NFL_FF_LEAGUE_ID)
-    res = nfl.get_settings(year=2021)
-    parser = settings.Parser(res.content)
-    context = parser.parse()
-
+    spy = spyder.Schedule(http.get, schedule.Parser)
+    data = crawl(spy, settings.NFL_FF_LEAGUE_ACTIVE_YEARS[:3])
     cfg = {
-        "api_key": AIRTABLE_API_KEY,
-        "base_id": AIRTABLE_BASE_ID,
-        "table_name": "Season 2021",
+        "api_key": settings.AIRTABLE_API_KEY,
+        "base_id": settings.AIRTABLE_BASE_GAMES_ID,
     }
     db = airtable.DatabaseClient(cfg)
+    for year, records in data.items():
+        db.table = str(year)
+        db.save(records)
 
-    spyder = sch.Spyder(nfl, schedule.Parser, db, context)
-    spyder.execute()
+
+def crawl(spy: spyder.FantasyHistory, active_years: list[int]):
+    data = defaultdict(list)
+    for year in active_years:
+        data[year] = spy.execute(year=year)
+    return data
 
 
 if __name__ == "__main__":
