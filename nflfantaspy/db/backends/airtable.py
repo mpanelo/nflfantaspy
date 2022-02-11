@@ -4,23 +4,19 @@ from nflfantaspy.db.backends.base import BaseDatabaseClient
 
 class DatabaseClient(BaseDatabaseClient):
     def __init__(self, cfg: dict):
-        self.cfg = cfg
-        self.table = Table(cfg["api_key"], cfg["base_id"], cfg["table_name"])
+        super().__init__(cfg)
 
-    def save(self, payload):
+    @property
+    def table(self):
+        return self._table
+
+    @table.setter
+    def table(self, name: str):
+        self._table = Table(self.cfg["api_key"], self.cfg["base_id"], name)
+
+    def save(self, records):
         self.destructive_reset()
-
-        for i, game in enumerate(payload):
-            record = {
-                "ID": i,
-                "Week": game["week"],
-                "Home Team": game["home_id"],
-                "Away Team": game["away_id"],
-                "Home Team Score": game["home_score"],
-                "Away Team Score": game["away_score"],
-                "Game Type": "REGULAR",
-            }
-            self.table.create(record)
+        self.table.batch_create(records)
 
     def destructive_reset(self):
         ids = []
