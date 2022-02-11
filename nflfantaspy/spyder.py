@@ -1,13 +1,13 @@
 from typing import Type
 
 from nflfantaspy.settings import NFL_FF_LEAGUE_ID
-from nflfantaspy.parser.base import BaseParser
+from nflfantaspy.parser import Parser
 
 
 class FantasyHistory:
     BASE_URL = f"https://fantasy.nfl.com/league/{NFL_FF_LEAGUE_ID}/history"
 
-    def __init__(self, fetch_fn, parser_class: Type[BaseParser], content_type: str):
+    def __init__(self, fetch_fn, parser_class: Type[Parser], content_type: str):
         self.fetch_fn = fetch_fn
         self.parser_class = parser_class
         self.content_type = content_type
