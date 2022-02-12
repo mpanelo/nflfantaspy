@@ -8,10 +8,12 @@ from nflfantaspy.db.backends import airtable, json
 
 # for year in years: (spyder: schedule, playoffs).execute() => post-processing => db.save
 
+
 def main():
     spy = spyder.Schedule(http.get, parser.Schedule)
     data = crawl(spy, settings.NFL_FF_LEAGUE_ACTIVE_YEARS[:3])
     save_to_json(data)
+
 
 def save_to_json(data: list[dict]):
     db = json.DatabaseClient({"filename": "games.json"})
