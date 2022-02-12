@@ -1,2 +1,7 @@
 # NFL Fantaspy
-TODO write README
+
+## Getting Started
+
+## Installation
+
+## Environment Variables
