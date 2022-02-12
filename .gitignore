@@ -1,4 +1,8 @@
 ### My gitignore rules ###
+
+# Requirements For My Development
+requirements.txt
+
 # Virtual Env
 myvenv
 
