@@ -6,30 +6,30 @@ from nflfantaspy import settings
 from nflfantaspy import parser
 from nflfantaspy import spyder
 from nflfantaspy.db.backends import airtable, json
+from nflfantaspy import cli
 
 # for year in years: (spyder: schedule, playoffs).execute() => post-processing => db.save
 
 
 def main():
-    args = parse_args()
-    spy = spyder.Schedule(args.league, http.get, parser.Schedule)
-    data = crawl(spy, settings.NFL_FF_LEAGUE_ACTIVE_YEARS[:1])
+    args = cli.parse_args()
 
-    if args.backend == settings.BACKENDS_JSON:
-        save_to_json(data)
-    elif args.backend == settings.BACKENDS_AIRTABLE:
-        save_to_airtable(data)
+    if args.data_type == cli.DATA_TYPE_GAMES:
+        spy = spyder.Schedule(args.league_id, http.get, parser.Schedule)
+    elif args.data_type == cli.DATA_TYPE_TEAMS:
+        spy = spyder.Teams(args.league_id, http.get, parser.Teams)
     else:
-        raise Exception(f"backend {args.backend} is not supported")
+        raise Exception(f"Unsupported data-type {args.data_type}")
 
+    data = crawl(spy, args.years)
+    print(data)
 
-def parse_args():
-    parser = argparse.ArgumentParser(
-        description="Scrape game and team history from your NFL fantasy football league. Store it as JSON or on Airtable."
-    )
-    parser.add_argument("--league", type=int, required=True)
-    parser.add_argument("--backend", choices=settings.BACKENDS, required=True)
-    return parser.parse_args()
+    # if args.backend == settings.BACKENDS_JSON:
+    #     save_to_json(data)
+    # elif args.backend == settings.BACKENDS_AIRTABLE:
+    #     save_to_airtable(data)
+    # else:
+    #     raise Exception(f"backend {args.backend} is not supported")
 
 
 def save_to_json(data: list[dict]):
