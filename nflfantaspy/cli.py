@@ -4,6 +4,9 @@ import re
 from argparse import ArgumentTypeError
 
 
+# TODO create constants file
+STORAGE_JSON = "json"
+STORAGE_AIRTABLE = "airtable"
 DATA_TYPE_GAMES = "games"
 DATA_TYPE_TEAMS = "teams"
 
@@ -11,7 +14,9 @@ DATA_TYPE_TEAMS = "teams"
 def parse_args():
     parser = argparse.ArgumentParser(add_help=False)
 
-    subparsers = parser.add_subparsers(title="storage options", required=True)
+    subparsers = parser.add_subparsers(
+        title="storage options", dest="cmd", required=True
+    )
     parent = add_shared_arguments()
 
     add_json_subparser(subparsers, parent)
@@ -21,7 +26,7 @@ def parse_args():
 
 def add_json_subparser(subparsers, parent):
     subparsers.add_parser(
-        "json",
+        STORAGE_JSON,
         parents=[parent],
         add_help=False,
         description="Store scraped data as a JSON file",
@@ -30,7 +35,7 @@ def add_json_subparser(subparsers, parent):
 
 def add_airtable_subparser(subparsers, parent):
     parser_airtable = subparsers.add_parser(
-        "airtable",
+        STORAGE_AIRTABLE,
         parents=[parent],
         add_help=False,
         description="Store scraped data on Airtable",

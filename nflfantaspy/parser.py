@@ -3,7 +3,7 @@ import re
 
 from bs4 import BeautifulSoup, Tag
 
-REGEX_TEAM_ID = re.compile("teamId-[0-9]")
+REGEX_TEAM_ID = re.compile("teamId-[0-9]+")
 REGEX_PLAYOFF_WEEK = re.compile("\d+")
 
 
@@ -79,6 +79,32 @@ class Teams(Parser):
         name = anchor.get_text().strip().lower()
 
         return {"id": id, "name": name, "owner": owner}
+
+
+class Playoffs(Parser):
+    def parse(self) -> dict:
+        return {
+            "weeks": self._parse_weeks(),
+            "teams": self._parse_teams(),
+        }
+
+    def _parse_teams(self):
+        anchors = self.soup.find_all("a", class_=REGEX_TEAM_ID)
+        ids = set()
+        for a in anchors:
+            ids.add(_parse_team_id(a))
+        return list(ids)
+
+    def _parse_weeks(self):
+        tag = self.soup.find("div", class_="weekLabels")
+        headers = tag.find_all("h4")
+        weeks = []
+        for header in headers:
+            match = REGEX_PLAYOFF_WEEK.search(header.string)
+
+            if match is not None:
+                weeks.append(int(match.group(0)))
+        return weeks
 
 
 class Settings(Parser):
