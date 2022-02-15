@@ -2,13 +2,7 @@ import argparse
 import re
 
 from argparse import ArgumentTypeError
-
-
-# TODO create constants file
-STORAGE_JSON = "json"
-STORAGE_AIRTABLE = "airtable"
-DATA_TYPE_GAMES = "games"
-DATA_TYPE_TEAMS = "teams"
+from nflfantaspy import constants
 
 
 def parse_args():
@@ -26,7 +20,7 @@ def parse_args():
 
 def add_json_subparser(subparsers, parent):
     subparsers.add_parser(
-        STORAGE_JSON,
+        constants.STORAGE_JSON,
         parents=[parent],
         add_help=False,
         description="Store scraped data as a JSON file",
@@ -35,7 +29,7 @@ def add_json_subparser(subparsers, parent):
 
 def add_airtable_subparser(subparsers, parent):
     parser_airtable = subparsers.add_parser(
-        STORAGE_AIRTABLE,
+        constants.STORAGE_AIRTABLE,
         parents=[parent],
         add_help=False,
         description="Store scraped data on Airtable",
@@ -70,7 +64,7 @@ def add_shared_arguments():
     )
     parser.add_argument(
         "--data-type",
-        choices=[DATA_TYPE_GAMES, DATA_TYPE_TEAMS],
+        choices=[constants.DATA_TYPE_GAMES, constants.DATA_TYPE_TEAMS],
         required=True,
         help="Scrappable fantasy football history data types",
     )

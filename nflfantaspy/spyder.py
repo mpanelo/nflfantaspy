@@ -1,6 +1,6 @@
 from typing import Type
 
-from nflfantaspy import settings
+from nflfantaspy import constants
 from nflfantaspy.parser import Parser
 
 
@@ -78,9 +78,9 @@ class Games(FantasyHistory):
 
         for game in games:
             if game["week"] not in playoffs["weeks"]:
-                game["type"] = settings.GAME_TYPE_REGULAR
+                game["type"] = constants.GAME_TYPE_REGULAR
             elif game["home_id"] in playoffs["teams"]:
-                game["type"] = settings.GAME_TYPE_PLAYOFF
+                game["type"] = constants.GAME_TYPE_PLAYOFF
             else:
-                game["type"] = settings.GAME_TYPE_CONSOLATION
+                game["type"] = constants.GAME_TYPE_CONSOLATION
         return games
