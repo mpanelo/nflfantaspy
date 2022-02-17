@@ -58,7 +58,13 @@ python -m nflfantaspy airtable \
 ```
 
 ## Configuration
+Before using the Airtable storage option, make sure you've configured your Airtable account:
+### Step 1: Generate API Key
+Go to your [account page](https://airtable.com/account) and generate your personal API key.
 
-## Limitations
+### Step 2: Create a Base For Each Data Type You Intend to Scrape
+For example, if you're going to scrape games history data. Create a Base for games, and a table for every year you're planning to scrape.
+
+The current Airtable API does not support dynamic Base and Table creation.
 
 ## Feedback
