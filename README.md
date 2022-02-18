@@ -98,4 +98,4 @@ Or click on the Base on the [API docs](https://airtable.com/api).
 - Project is not 100% complete. There are still enhancements left to do to make the DX better. Bugs left to resolve.
 
 ## Feedback
-Feedback is appreciated! To get in contact, send me a DM on [Twitter](https://twitter.com/maupanelo).
+I appreciate all feedback! To get in contact, send me a DM on [Twitter](https://twitter.com/maupanelo).
