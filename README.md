@@ -95,7 +95,9 @@ Or click on the Base on the [API docs](https://airtable.com/api).
 ## Limitations
 - Storing data to Airtable requires manual configuration
 - Your NFL fantasy football league needs to be Public (NFL API is not open to the public)
-- Project is not 100% complete. There are still enhancements left to do to make the DX better. Bugs left to resolve.
+- Project is not 100% complete
+  - There are still enhancements left to do to make the DX better
+  - Bugs left to resolve.
 
 ## Feedback
 I appreciate all feedback! To get in contact, send me a DM on [Twitter](https://twitter.com/maupanelo).
