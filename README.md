@@ -88,9 +88,7 @@ Create the following fields for your Tables in the Teams Base:
 | owner        | Single line text |
 
 ### Step 4: Get the Base IDs
-Get the Base ID from the [URL](https://support.airtable.com/hc/en-us/articles/4405741487383-Understanding-Airtable-IDs)
-
-Or click on the Base on the [API docs](https://airtable.com/api).
+Get the Base ID from the [URL](https://support.airtable.com/hc/en-us/articles/4405741487383-Understanding-Airtable-IDs) or click on the Base in the [API docs](https://airtable.com/api).
 
 ## Limitations
 - Storing data to Airtable requires manual configuration
