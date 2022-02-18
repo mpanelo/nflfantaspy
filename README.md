@@ -95,7 +95,7 @@ Get the Base ID from the [URL](https://support.airtable.com/hc/en-us/articles/44
 - Your NFL fantasy football league needs to be Public (NFL API is not open to the public)
 - Project is not 100% complete
   - There are still enhancements left to do to make the DX better
-  - Bugs left to resolve.
+  - Bugs left to resolve
 
 ## Feedback
 I appreciate all feedback! To get in contact, send me a DM on [Twitter](https://twitter.com/maupanelo).
