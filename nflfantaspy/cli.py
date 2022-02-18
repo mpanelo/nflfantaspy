@@ -6,7 +6,10 @@ from nflfantaspy import constants
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(add_help=False)
+    parser = argparse.ArgumentParser(
+        prog="nflfantaspy",
+        description="Scrape game and team history from your NFL fantasy football league, and store it as JSON or on Airtable.",
+    )
 
     subparsers = parser.add_subparsers(
         title="storage options", dest="cmd", required=True
@@ -47,9 +50,7 @@ def add_airtable_subparser(subparsers, parent):
 
 
 def add_shared_arguments():
-    parser = argparse.ArgumentParser(
-        description="Scrape game and team history from your NFL fantasy football league, and store it as JSON or on Airtable.",
-    )
+    parser = argparse.ArgumentParser()
     parser.add_argument(
         "--league-id",
         type=int,
@@ -78,10 +79,10 @@ def parseYears(arg: str):
             f"'{arg}' is not a range of years (examples: '2014-2021' or '2020')"
         )
 
-    start = m.group(1)
-    end = m.group(2) or start
+    start = int(m.group(1))
+    end = int(m.group(2) or start)
 
     if end < start:
         raise ArgumentTypeError(f"'{arg}' is not an increasing range")
 
-    return list(range(int(start), int(end) + 1))
+    return list(range(start, end + 1))
