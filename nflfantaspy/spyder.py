@@ -76,7 +76,8 @@ class Games(FantasyHistory):
         games = self.schedule.execute(**kwargs)
         playoffs = self.playoffs.execute(**kwargs)
 
-        for game in games:
+        for i, game in enumerate(games):
+            game["id"] = i
             if game["week"] not in playoffs["weeks"]:
                 game["type"] = constants.GAME_TYPE_REGULAR
             elif game["home_id"] in playoffs["teams"]:
