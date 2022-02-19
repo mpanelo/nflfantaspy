@@ -5,7 +5,7 @@ from argparse import ArgumentTypeError
 from nflfantaspy import constants
 
 
-def parse_args():
+def parse_args(args=None):
     parser = argparse.ArgumentParser(
         prog="nflfantaspy",
         description="Scrape game and team history from your NFL fantasy football league, and store it as JSON or on Airtable.",
@@ -18,7 +18,7 @@ def parse_args():
 
     add_json_subparser(subparsers, parent)
     add_airtable_subparser(subparsers, parent)
-    return parser.parse_args()
+    return parser.parse_args(args)
 
 
 def add_json_subparser(subparsers, parent):
