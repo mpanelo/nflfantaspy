@@ -18,10 +18,10 @@ def main():
         playoffs = spyder.Playoffs(args.league_id, http.get, parser.Playoffs)
         spy = spyder.Games(schedule=schedule, playoffs=playoffs)
         executeCfg = {"bracket_type": constants.BRACKET_TYPE_CONSOLATION}
-        filename = "games"
+        filename = "games.json"
     elif args.data_type == constants.DATA_TYPE_TEAMS:
         spy = spyder.Teams(args.league_id, http.get, parser.Teams)
-        filename = "teams"
+        filename = "teams.json"
     else:
         raise Exception(f"Unsupported data-type {args.data_type}")
 
